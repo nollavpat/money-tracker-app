@@ -19,7 +19,7 @@ const Login = ({navigation}) => {
 
         if (success) {
           setLoggedIn(true);
-          navigation.navigate('Home');
+          navigation.navigate('ProtectedScreens');
         } else {
           console.log('user cancelled biometric prompt');
         }

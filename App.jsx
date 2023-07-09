@@ -4,8 +4,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAtom} from 'jotai';
 
-import Home from './src/pages/Home';
 import Login from './src/pages/Login';
+import ProtectedScreens from './src/pages/ProtectedScreens';
+
 import {loggedInAtom} from './src/states/auth';
 
 const Stack = createNativeStackNavigator();
@@ -39,7 +40,12 @@ const App = () => {
         }}>
         {(() => {
           if (isLoggedIn) {
-            return <Stack.Screen name="Home" component={Home} />;
+            return (
+              <Stack.Screen
+                name="ProtectedScreens"
+                component={ProtectedScreens}
+              />
+            );
           } else {
             return <Stack.Screen name="Login" component={Login} />;
           }
