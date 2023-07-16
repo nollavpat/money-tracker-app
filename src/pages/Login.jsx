@@ -11,22 +11,22 @@ const rnBiometrics = new ReactNativeBiometrics({allowDeviceCredentials: true});
 const Login = ({navigation}) => {
   const [, setLoggedIn] = useAtom(loggedInAtom);
 
-  const onFingerprint = () => {
-    rnBiometrics
-      .simplePrompt({promptMessage: 'Confirm fingerprint'})
-      .then(resultObject => {
-        const {success} = resultObject;
-
-        if (success) {
-          setLoggedIn(true);
-          navigation.navigate('ProtectedScreens');
-        } else {
-          console.log('user cancelled biometric prompt');
-        }
-      })
-      .catch(() => {
-        console.log('biometrics failed');
+  const onFingerprint = async () => {
+    try {
+      const {success} = await rnBiometrics.simplePrompt({
+        promptMessage: 'Confirm fingerprint',
       });
+
+      if (success) {
+        setLoggedIn(true);
+        navigation.navigate('ProtectedScreens');
+      } else {
+        console.log('user cancelled biometric prompt');
+      }
+    } catch (error) {
+      console.log('biometrics failed');
+      console.error(error);
+    }
   };
 
   return (
