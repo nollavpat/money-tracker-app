@@ -31,9 +31,7 @@ const Login = ({navigation}) => {
 
   return (
     <View className="p-6">
-      <View>
-        <Text className="text-3xl font-medium text-green-500">MT</Text>
-      </View>
+      <Text className="text-3xl font-medium text-green-500">MT</Text>
       <View className="mt-40">
         <Text className="text-3xl font-bold text-neutral-950">
           Hello Patrick,
