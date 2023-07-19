@@ -3,7 +3,7 @@ import {Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 
-import Amount from '../components/Amount';
+import Amount from '../../components/Amount';
 
 const date = new Date();
 const year = date.getFullYear();
