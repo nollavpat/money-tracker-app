@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Alert, BackHandler} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import Home from './Home';
+import Home from './Home/Home';
 
 const Stack = createNativeStackNavigator();
 
