@@ -1,124 +1,28 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 import dayjs from 'dayjs';
+import {MONEY_TRACKER_TOKEN, MONEY_TRACKER_URL} from '@env';
 
 import TransactionsByDate from './TransactionsByDate';
 
-const transactions = [
-  {
-    id: 1,
-    amount: -100,
-    name: 'Grocery',
-    purpose: 'food',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-15 11:20:00'),
-  },
-  {
-    id: 2,
-    amount: -100,
-    name: 'Clothes',
-    purpose: 'apparel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-15 11:20:00'),
-  },
-  {
-    id: 3,
-    amount: -100,
-    name: 'MRT',
-    purpose: 'commute',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-15 11:20:00'),
-  },
-  {
-    id: 4,
-    amount: -100,
-    name: 'Food',
-    purpose: 'travel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-15 11:20:00'),
-  },
-  {
-    id: 5,
-    amount: -100,
-    name: 'Grocery',
-    purpose: 'food',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-16 11:20:00'),
-  },
-  {
-    id: 6,
-    amount: -100,
-    name: 'Clothes',
-    purpose: 'apparel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-16 11:20:00'),
-  },
-  {
-    id: 7,
-    amount: -100,
-    name: 'MRT',
-    purpose: 'commute',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-16 11:20:00'),
-  },
-  {
-    id: 8,
-    amount: -100,
-    name: 'Food',
-    purpose: 'travel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-16 11:20:00'),
-  },
-  {
-    id: 9,
-    amount: -100,
-    name: 'Grocery',
-    purpose: 'food',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-17 11:20:00'),
-  },
-  {
-    id: 10,
-    amount: -100,
-    name: 'Clothes',
-    purpose: 'apparel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-17 11:20:00'),
-  },
-  {
-    id: 11,
-    amount: -100,
-    name: 'MRT',
-    purpose: 'commute',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-17 11:20:00'),
-  },
-  {
-    id: 12,
-    amount: -100,
-    name: 'Food',
-    purpose: 'travel',
-    tags: ['japan'],
-    createdAt: new Date('2023-07-17 11:20:00'),
-  },
-];
 const DATE_FORMAT = 'MMMM DD, dddd';
 
 const Body = () => {
-  transactions.sort((t1, t2) => {
-    if (t1.createdAt < t2.createdAt) {
-      return 1;
-    }
+  const [transactions, setTransactions] = useState([]);
 
-    if (t1.createdAt > t2.createdAt) {
-      return -1;
-    }
-
-    return 0;
-  });
+  useEffect(() => {
+    fetch(`${MONEY_TRACKER_URL}/txns`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Token ${MONEY_TRACKER_TOKEN}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => setTransactions(data));
+  }, []);
 
   const transactionsGroupByDate = transactions.reduce((acc, curr) => {
-    const date = dayjs(curr.createdAt).format(DATE_FORMAT);
+    const date = dayjs(curr.created_at).format(DATE_FORMAT);
 
     return {
       ...acc,
@@ -127,7 +31,7 @@ const Body = () => {
   }, {});
 
   return (
-    <View className="h-full items-center bg-neutral-100 pt-4">
+    <View className="h-3/4 items-center bg-neutral-100 pb-4 pt-4">
       <FlatList
         keyExtractor={transactionDate => transactionDate}
         data={Object.keys(transactionsGroupByDate)}
