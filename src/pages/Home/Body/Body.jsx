@@ -1,11 +1,11 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import dayjs from 'dayjs';
 import {useAtom} from 'jotai';
 
 import TransactionsByDate from './TransactionsByDate';
 
-import {homeFrom, homeTo} from '../../../states/transactions';
+import {homeFromAtom, homeToAtom} from '../../../states/transactions';
 import TransactionWebservice from '../../../webservices/money_tracker/TransactionWebservice';
 
 const DATE_FORMAT = 'MMMM DD, dddd';
@@ -13,8 +13,8 @@ const DATE_FORMAT = 'MMMM DD, dddd';
 const Body = () => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [fromDate] = useAtom(homeFrom);
-  const [toDate] = useAtom(homeTo);
+  const [fromDate] = useAtom(homeFromAtom);
+  const [toDate] = useAtom(homeToAtom);
 
   const getTransactions = async (from, to) => {
     setIsLoading(true);
@@ -46,15 +46,20 @@ const Body = () => {
   return (
     <View className="flex-grow items-center justify-center bg-neutral-100">
       <FlatList
-        keyExtractor={transactionDate => transactionDate}
         data={Object.keys(transactionsGroupByDate)}
+        ListEmptyComponent={
+          <View className="mt-52">
+            <Text>No transactions found</Text>
+          </View>
+        }
+        keyExtractor={transactionDate => transactionDate}
+        refreshing={isLoading}
         renderItem={({item: transactionDate}) => (
           <TransactionsByDate
             transactionDate={transactionDate}
             transactions={transactionsGroupByDate[transactionDate]}
           />
         )}
-        refreshing={isLoading}
         onRefresh={async () => getTransactions(fromDate, toDate)}
       />
     </View>

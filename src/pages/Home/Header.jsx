@@ -6,24 +6,28 @@ import {useAtom} from 'jotai';
 
 import Amount from '../../components/Amount';
 
-import {homeFrom, homeTo} from '../../states/transactions';
+import {homeFromAtom, homeToAtom} from '../../states/transactions';
 
 const DATE_PICKER_FORMAT = 'MMMM D, YYYY';
 
 const Header = () => {
-  const [fromDate, setFromDate] = useAtom(homeFrom);
-  const [toDate, setToDate] = useAtom(homeTo);
-  const [showFromDatePicker, setShowFromDatePicker] = useState(false);
-  const [showToDatePicker, setShowToDatePicker] = useState(false);
+  const [fromDate, setFromDate] = useAtom(homeFromAtom);
+  const [toDate, setToDate] = useAtom(homeToAtom);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [datePickerProps, setDatePickerProps] = useState({});
 
   const onDateSelect = type => (event, selectedDate) => {
-    if (type === 'to') {
-      setToDate(selectedDate);
-      setShowToDatePicker(false);
-    } else {
-      setFromDate(selectedDate);
-      setShowFromDatePicker(false);
+    if (type === 'from') {
+      if (+selectedDate !== +fromDate) {
+        setFromDate(selectedDate);
+      }
+    } else if (type === 'to') {
+      if (+selectedDate !== +toDate) {
+        setToDate(selectedDate);
+      }
     }
+
+    setShowDatePicker(false);
   };
 
   return (
@@ -31,13 +35,29 @@ const Header = () => {
       <Text className="text-3xl font-medium text-green-500">MT</Text>
       <View className="mt-4">
         <View className="flex flex-row justify-center gap-4">
-          <Pressable onPress={() => setShowFromDatePicker(true)}>
+          <Pressable
+            onPress={() => {
+              setDatePickerProps({
+                value: fromDate,
+                onChange: onDateSelect('from'),
+                maximumDate: toDate,
+              });
+              setShowDatePicker(true);
+            }}>
             <Text className="text-neutral-500 underline">
               {dayjs(fromDate).format(DATE_PICKER_FORMAT)}
             </Text>
           </Pressable>
           <Text className="text-neutral-500">-</Text>
-          <Pressable onPress={() => setShowToDatePicker(true)}>
+          <Pressable
+            onPress={() => {
+              setDatePickerProps({
+                value: toDate,
+                onChange: onDateSelect('to'),
+                minimumDate: fromDate,
+              });
+              setShowDatePicker(true);
+            }}>
             <Text className="text-neutral-500 underline">
               {dayjs(toDate).format(DATE_PICKER_FORMAT)}
             </Text>
@@ -48,21 +68,11 @@ const Header = () => {
         <Text className="text-neutral-500">EXPENSES</Text>
         <Amount className="font-medium text-green-500 " amount="10000" />
       </View>
-      {showFromDatePicker && (
+      {showDatePicker && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={fromDate}
           mode="date"
-          onChange={onDateSelect('from')}
-        />
-      )}
-      {showToDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={toDate}
-          mode="date"
-          onChange={onDateSelect('to')}
-          minimumDate={fromDate}
+          {...datePickerProps}
         />
       )}
     </View>
