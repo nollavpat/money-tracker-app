@@ -2,19 +2,17 @@ import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
+import {useAtom} from 'jotai';
 
 import Amount from '../../components/Amount';
 
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth();
-const firstDay = new Date(year, month, 1);
-const lastDay = new Date(year, month + 1, 0);
+import {homeFrom, homeTo} from '../../states/transactions';
+
 const DATE_PICKER_FORMAT = 'MMMM D, YYYY';
 
 const Header = () => {
-  const [fromDate, setFromDate] = useState(firstDay);
-  const [toDate, setToDate] = useState(lastDay);
+  const [fromDate, setFromDate] = useAtom(homeFrom);
+  const [toDate, setToDate] = useAtom(homeTo);
   const [showFromDatePicker, setShowFromDatePicker] = useState(false);
   const [showToDatePicker, setShowToDatePicker] = useState(false);
 
