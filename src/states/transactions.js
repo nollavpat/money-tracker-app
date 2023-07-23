@@ -9,3 +9,5 @@ const lastDay = new Date(year, month + 1, 0);
 export const homeFromAtom = atom(firstDay);
 
 export const homeToAtom = atom(lastDay);
+
+export const transactionsAtom = atom([]);

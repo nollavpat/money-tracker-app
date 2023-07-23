@@ -1,5 +1,4 @@
 import {MONEY_TRACKER_TOKEN, MONEY_TRACKER_URL} from '@env';
-import dayjs from 'dayjs';
 
 class TransactionWebservice {
   static #path = `${MONEY_TRACKER_URL}/txns`;
@@ -9,11 +8,11 @@ class TransactionWebservice {
       const url = new URL(TransactionWebservice.#path);
 
       if (from) {
-        url.searchParams.append('from', dayjs(from).toISOString());
+        url.searchParams.append('from', from);
       }
 
       if (to) {
-        url.searchParams.append('to', dayjs(to).toISOString());
+        url.searchParams.append('to', to);
       }
 
       const response = await fetch(url.href, {

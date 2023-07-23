@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
@@ -6,29 +6,44 @@ import {useAtom} from 'jotai';
 
 import Amount from '../../components/Amount';
 
-import {homeFromAtom, homeToAtom} from '../../states/transactions';
+import {
+  homeFromAtom,
+  homeToAtom,
+  transactionsAtom,
+} from '../../states/transactions';
 
 const DATE_PICKER_FORMAT = 'MMMM D, YYYY';
 
 const Header = () => {
   const [fromDate, setFromDate] = useAtom(homeFromAtom);
   const [toDate, setToDate] = useAtom(homeToAtom);
+  const [transactions] = useAtom(transactionsAtom);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [datePickerProps, setDatePickerProps] = useState({});
 
   const onDateSelect = type => (event, selectedDate) => {
     if (type === 'from') {
       if (+selectedDate !== +fromDate) {
-        setFromDate(selectedDate);
+        setFromDate(selectedDate.toUTCString());
       }
     } else if (type === 'to') {
       if (+selectedDate !== +toDate) {
-        setToDate(selectedDate);
+        selectedDate.setHours(23, 59);
+
+        setToDate(selectedDate.toUTCString());
       }
     }
 
     setShowDatePicker(false);
   };
+
+  const totalExpenses = useMemo(() => {
+    const expenses = transactions.reduce((acc, curr) => {
+      return acc + Number(curr.amount);
+    }, 0);
+
+    return Math.abs(expenses);
+  }, [transactions]);
 
   return (
     <View style={styles.header}>
@@ -66,7 +81,7 @@ const Header = () => {
       </View>
       <View className="mt-4 items-center">
         <Text className="text-neutral-500">EXPENSES</Text>
-        <Amount className="font-medium text-green-500 " amount="10000" />
+        <Amount className="font-medium text-red-500 " amount={totalExpenses} />
       </View>
       {showDatePicker && (
         <DateTimePicker
