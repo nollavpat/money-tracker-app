@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import dayjs from 'dayjs';
-import {MONEY_TRACKER_TOKEN, MONEY_TRACKER_URL} from '@env';
 
 import TransactionsByDate from './TransactionsByDate';
+import TransactionWebservice from '../../../webservices/money_tracker/TransactionWebservice';
 
 const DATE_FORMAT = 'MMMM DD, dddd';
 
@@ -11,14 +11,13 @@ const Body = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    fetch(`${MONEY_TRACKER_URL}/txns`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Token ${MONEY_TRACKER_TOKEN}`,
-      },
-    })
-      .then(response => response.json())
-      .then(data => setTransactions(data));
+    (async () => {
+      const [error, data] = await TransactionWebservice.getTransactions();
+
+      if (!error) {
+        setTransactions(data);
+      }
+    })();
   }, []);
 
   const transactionsGroupByDate = transactions.reduce((acc, curr) => {
@@ -31,7 +30,7 @@ const Body = () => {
   }, {});
 
   return (
-    <View className="h-3/4 items-center bg-neutral-100 pb-4 pt-4">
+    <View className="items-center bg-neutral-100">
       <FlatList
         keyExtractor={transactionDate => transactionDate}
         data={Object.keys(transactionsGroupByDate)}

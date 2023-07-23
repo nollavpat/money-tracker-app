@@ -7,7 +7,7 @@ import Header from './Header';
 const Home = () => {
   return (
     <SafeAreaView>
-      <View>
+      <View className="flex flex-col">
         <Header />
         <Body />
       </View>
