@@ -24,10 +24,11 @@ const Body = () => {
     const initTransactions = async () => {
       setIsLoading(true);
 
-      const [error, data] = await TransactionWebservice.getTransactions(
-        fromDate,
-        toDate,
-      );
+      const [error, data] = await TransactionWebservice.getTransactions({
+        direction: 'debit',
+        from: fromDate,
+        to: toDate,
+      });
 
       setIsLoading(false);
 

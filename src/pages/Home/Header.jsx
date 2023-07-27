@@ -37,8 +37,24 @@ const Header = () => {
     setShowDatePicker(false);
   };
 
-  const totalExpenses = useMemo(() => {
+  const totalExpense = useMemo(() => {
     const expenses = transactions.reduce((acc, curr) => {
+      if (Number(curr.amount) > 0) {
+        return acc;
+      }
+
+      return acc + Number(curr.amount);
+    }, 0);
+
+    return Math.abs(expenses);
+  }, [transactions]);
+
+  const totalIncome = useMemo(() => {
+    const expenses = transactions.reduce((acc, curr) => {
+      if (Number(curr.amount) < 0) {
+        return acc;
+      }
+
       return acc + Number(curr.amount);
     }, 0);
 
@@ -79,9 +95,18 @@ const Header = () => {
           </Pressable>
         </View>
       </View>
-      <View className="mt-4 items-center">
-        <Text className="text-neutral-500">EXPENSES</Text>
-        <Amount className="font-medium text-red-500 " amount={totalExpenses} />
+      <View style={styles.summaryContainer}>
+        <View className="items-center">
+          <Text className="text-neutral-500">EXPENSE</Text>
+          <Amount className="font-medium text-red-500 " amount={totalExpense} />
+        </View>
+        <View className="items-center">
+          <Text className="text-neutral-500">INCOME</Text>
+          <Amount
+            className="font-medium text-green-500 "
+            amount={totalIncome}
+          />
+        </View>
       </View>
       {showDatePicker && (
         <DateTimePicker
@@ -102,6 +127,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     shadowColor: '#0a0a0a',
     zIndex: 2,
+  },
+  summaryContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 16,
   },
 });
 
