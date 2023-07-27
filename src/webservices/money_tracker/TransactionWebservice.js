@@ -3,17 +3,13 @@ import {MONEY_TRACKER_TOKEN, MONEY_TRACKER_URL} from '@env';
 class TransactionWebservice {
   static #path = `${MONEY_TRACKER_URL}/txns`;
 
-  static async getTransactions(from, to) {
+  static async getTransactions(params) {
     try {
       const url = new URL(TransactionWebservice.#path);
 
-      if (from) {
-        url.searchParams.append('from', from);
-      }
-
-      if (to) {
-        url.searchParams.append('to', to);
-      }
+      Object.keys(params).forEach(key => {
+        url.searchParams.append(key, params[key]);
+      });
 
       const response = await fetch(url.href, {
         method: 'GET',
