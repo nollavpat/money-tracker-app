@@ -1,8 +1,9 @@
 import React, {useState, useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import dayjs from 'dayjs';
 import {useAtom} from 'jotai';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Amount from '../../components/Amount';
 
@@ -20,6 +21,7 @@ const Header = () => {
   const [transactions] = useAtom(transactionsAtom);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [datePickerProps, setDatePickerProps] = useState({});
+  const [showIncome, setShowIncome] = useState(false);
 
   const onDateSelect = type => (event, selectedDate) => {
     if (type === 'from') {
@@ -95,17 +97,27 @@ const Header = () => {
           </Pressable>
         </View>
       </View>
-      <View style={styles.summaryContainer}>
-        <View className="items-center">
+      <View className="mt-4 flex-row">
+        <View className="w-1/2 items-center">
           <Text className="text-neutral-500">EXPENSE</Text>
           <Amount className="font-medium text-red-500 " amount={totalExpense} />
         </View>
-        <View className="items-center">
+        <View className="w-1/2 items-center">
           <Text className="text-neutral-500">INCOME</Text>
-          <Amount
-            className="font-medium text-green-500 "
-            amount={totalIncome}
-          />
+          <View className="flex-row items-center space-x-1">
+            <Amount
+              amount={totalIncome}
+              className="font-medium text-green-500"
+              isHidden={!showIncome}
+            />
+            <Pressable onPress={() => setShowIncome(prev => !prev)}>
+              <MaterialCommunityIcons
+                name={showIncome ? 'eye-off' : 'eye'}
+                size={24}
+                color="#737373"
+              />
+            </Pressable>
+          </View>
         </View>
       </View>
       {showDatePicker && (
