@@ -52,7 +52,7 @@ const Body = () => {
   }, [transactions]);
 
   return (
-    <View className="flex-grow items-center justify-center bg-neutral-100">
+    <View className="flex-grow items-center justify-center bg-neutral-100 pb-16">
       {(() => {
         if (isLoading) {
           return <ActivityIndicator color="#22c55e" size={32} />;
